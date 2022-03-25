@@ -38,11 +38,11 @@ class Fitting_Functions():
         detS = (S_AA*S_BB)-(S_AB*S_AB)
         return 1/((g(xx,1)/self.N/detS)-2*a)
 
-    def SK_Diblock_Add(self,x,a,b,c,d):
+    def SK_Diblock_Add(self,x,a,b,c,d,e):
         xx =x*x
         S_AA,S_BB,S_AB = StructureFactorMatrix(xx,self.f)
         detS = (S_AA*S_BB)-(S_AB*S_AB)
-        return 1/(((g(xx,1)/self.N/detS)-2*a)+b+c*np.power(x,2)+d*np.power(x,4))
+        return (1/(((g(xx,1)/self.N/detS)-2*a)+b+c*np.power(x,2)+d*np.power(x,4)))+e
 
 
 
@@ -51,7 +51,7 @@ class Fitting_Functions():
 
 def inverse_SK_diblock_ROL(f,N,chi,Nbar):
     def e_fun(f,a,b):
-        return a-b*np.power(1/2-f,2)
+        return a+b*np.power(1/2-f,2)
     a = e_fun(f, 0.652, -0.799)
     b = e_fun(f, 0.0, -18.2)
     c = e_fun(f, 2.5, 0.857)
