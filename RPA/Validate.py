@@ -60,51 +60,57 @@ Speak = np.vstack(Speaklist)
 plt.plot(chilist,1/Speak/2,'--k')
 plt.xlim(0,12)
 plt.ylim(0,12)
-
-plt.figure()
-Nbar = 1000
-Speaklist = []
-Speak_ROL_list = []
-for i in range(len(chilist)):
-    chi = chilist[i]/N
-    isk = inverse_Sk_diblock(x*x*N/6,N,chi) # units are in Rg
-    qRg= x*np.sqrt(N/6)
-    sk = 1/isk/N
-    cs = CubicSpline(qRg, sk)
-    loc = cs.derivative().roots()[-1]
-    Speaklist.append(cs(loc))
-    extra = inverse_SK_diblock_ROL(0.5,N,chi,Nbar)
-    Speak_ROL_list.append(np.array([chilist[i]*N,extra,1/cs(loc)]))
-    # plt.plot(x,cs(x))
-    # plt.plot(loc,cs(loc),'ok')
-Speak = np.vstack(Speaklist).reshape((len(Speaklist)))
-Speak_ROL = np.vstack(Speak_ROL_list)
-# plt.plot(chilist,Speak/2,'--k')
-plt.plot(chilist,Speak_ROL[:,1]*np.sqrt(Nbar),'--r')
-plt.xlim(0,10.5)
-plt.ylim(-100,1000)
-
-plt.close('all')
+Nlist =[10,20,50,100,200,500,1000]
+# plt.close('all')
 
 plt.figure()
 
+for k in range(0,len(Nlist)):
+    Nbar = (0.1*np.sqrt(Nlist[k]))**2*6**3
 
-plt.plot(chilist+Speak_ROL[:,1]/2,Speak_ROL[:,1]/2,'--r')
-maping = CubicSpline(chilist[:-1]+Speak_ROL[:-1,1]/2,Speak_ROL[:-1,1])
-Sinv_Rnorm = maping(chilist[:-1])+Speak_ROL[:-1,2]
+    # plt.figure()
+    Speaklist = []
+    Speak_ROL_list = []
+    for i in range(len(chilist)):
+        chi = chilist[i]/N
+        isk = inverse_Sk_diblock(x*x*N/6,N,chi) # units are in Rg
+        qRg= x*np.sqrt(N/6)
+        sk = 1/isk/N
+        cs = CubicSpline(qRg, sk)
+        loc = cs.derivative().roots()[-1]
+        Speaklist.append(cs(loc))
+        extra = inverse_SK_diblock_ROL(0.5,N,chi,Nbar)
+        Speak_ROL_list.append(np.array([chilist[i]*N,extra,1/cs(loc)]))
+        # plt.plot(x,cs(x))
+        # plt.plot(loc,cs(loc),'ok')
+    Speak = np.vstack(Speaklist).reshape((len(Speaklist)))
+    Speak_ROL = np.vstack(Speak_ROL_list)
+    # plt.plot(chilist,Speak/2,'--k')
+    # plt.plot(chilist,Speak_ROL[:,1]*np.sqrt(Nbar),'--r')
+    # plt.xlim(0,10.5)
+    # plt.ylim(-100,1000)
+    
+    
+    
+    # plt.plot(chilist+Speak_ROL[:,1]/2,Speak_ROL[:,1]/2,'--r')
+    maping = CubicSpline(chilist[:-1]+Speak_ROL[:-1,1]/2,Speak_ROL[:-1,1])
+    Sinv_Rnorm = maping(chilist[:-1])+Speak_ROL[:-1,2]
+    
+    # plt.xlabel('$\chi_e$')
+    # plt.ylabel('$cN\delta S^{-1}(q^* R_g)$')
+    # plt.xlim(0,10.5)
+    # plt.ylim(-2,2
+    # plt.figure()
 
-plt.xlabel('$\chi_e$')
-plt.ylabel('$cN\delta S^{-1}(q^* R_g)$')
-plt.xlim(0,10.5)
-plt.ylim(-2,2)
 
-plt.figure()
+    plt.plot(chilist[:-1],Sinv_Rnorm/2,'--r',alpha = ((k+1)/(len(Nlist)+1)) )
+    if k==0:
+        plt.plot(chilist,1/Speak/2,'--k',label = 'RPA')
 
-
-plt.plot(chilist[:-1],Sinv_Rnorm/2,'--r')
-plt.plot(chilist,1/Speak/2,'--k')
-
-
-dataset = np.vstack((np.array(chilist),1/Speak/2))
-
-np.savetxt('RPA_Sinv.dat',dataset)
+        dataset = np.vstack((np.array(chilist),1/Speak/2))
+        np.savetxt(f'RPA_Sinv.dat',dataset)
+    dataset = np.vstack((np.array(chilist[:-1]),Sinv_Rnorm/2))
+    np.savetxt(f'ROL_Sinv_N_{Nlist[k]}_Nbar_{Nbar}.dat',dataset)
+plt.xlabel('$\chi_e N$')
+plt.ylabel('$cN S^{-1}(q^* R_g)/2$')
+plt.savefig('/home/tquah/Figures/ROL_RPA_Peak_chieN.pdf',dpi = 300)

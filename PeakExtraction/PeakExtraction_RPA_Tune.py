@@ -72,40 +72,44 @@ for i in range(0,len(header),1):
     peak_loc = find_peaks(Sfit_add_plot,prominence=0.5, width=10)[0]
     distance = np.abs(peak_loc-hackdistance)
     pick_peak = np.where(distance ==np.min(distance))
-    dictionary[header[i]]['PeakStuff'] = np.array([chi_a,N, xmainplot[peak_loc[pick_peak]][0],\
+    dictionary[header[i]]['PeakStuff'] = np.array([chi_a,chi,N, xmainplot[peak_loc[pick_peak]][0],\
                                                    Sfit_add_plot[peak_loc[pick_peak]][0]])
     datalist.append(dictionary[header[i]]['PeakStuff'] )
-    # if len(peak_loc)==0:
-    # plt.figure()
-
-    # plt.plot(x,S,'r^',label = r'$S(q)/CN$')
-    # plt.plot(x,SAA,'ok',label = r'$S_{AA}(q)/CN$')
+    if len(peak_loc)==0 or chi_a*N==4.0:
+        plt.figure(figsize = (6,6))
+        plt.title(fr'$\chi N = {4.0}$, $N={N}$')
+        plt.plot(x,S,'r^',label = r'$S(q)/CN$')
+        plt.plot(x,SAA,'ok',label = r'$S_{AA}(q)/CN$')
+        
+        plt.ylabel('$S(q)/CN$')
+        plt.xlabel('$q \ (R^{-1}_{g,0})$')
+        # plt.plot(x,1/isk_2,label =fr'$\chi N = {chi_a*N}$')
+        # plt.plot(x,1/isk_1,label =fr'$\chi N = {chi*N:0.2f}$')
+        # plt.plot(x,1/isk_1,label =fr'$\chi N = {chi*N:0.2f}$')
+        # plt.plot(x,Sfit,label =fr'$\chi N = {param[0]*N:0.2f}-RPA-Fit$')
+        # plt.plot(x,Sfit_add,label =fr'$AugFit$')
+        plt.plot(xmainplot,Sfit_add_plot,label =fr'$AugFit$')
+        # plt.plot(xmainplot,cs(xmainplot),label =fr'$\chi N = {param2[0]*N:0.2f}-RPA-AugFit$')
+        # plt.plot(locus,cs(locus),'sb')
+        plt.plot(xmainplot[peak_loc],Sfit_add_plot[peak_loc],'Dg')
     
-    # plt.ylabel('$S(q)/CN$')
-    # plt.xlabel('$q \ (R^{-1}_{g,0})$')
-    # # plt.plot(x,1/isk_2,label =fr'$\chi N = {chi_a*N}$')
-    # # plt.plot(x,1/isk_1,label =fr'$\chi N = {chi*N:0.2f}$')
-    # # plt.plot(x,1/isk_1,label =fr'$\chi N = {chi*N:0.2f}$')
-    # plt.plot(x,Sfit,label =fr'$\chi N = {param[0]*N:0.2f}-RPA-Fit$')
-    # plt.plot(x,Sfit_add,label =fr'$\chi N = {param2[0]*N:0.2f}-RPA-AugFit$')
-    # plt.plot(xmainplot,Sfit_add_plot,label =fr'$\chi N = {param2[0]*N:0.2f}-RPA-AugFit$')
-    # plt.plot(xmainplot,cs(xmainplot),label =fr'$\chi N = {param2[0]*N:0.2f}-RPA-AugFit$')
-    # # plt.plot(locus,cs(locus),'sb')
-    # plt.plot(xmainplot[peak_loc],Sfit_add_plot[peak_loc],'Dg')
-
-    # plt.xlim(0,np.max(x))
-    # plt.ylim(np.min(S[loc]),np.max(S[loc]))
-    # plt.legend()
-    # break
+        plt.xlim(0,np.max(x))
+        plt.ylim(np.min(S[loc]),Sfit_add_plot[peak_loc[-1]]*1.1)
+        plt.legend()
+        plt.savefig(f'/home/tquah/Figures/S_{N}.pdf',dpi =300)
+        # break
 data = np.vstack(datalist)
-data[:,3] = data[:,3]/data[:,1]
-Nunique = np.unique(data[:,1])
+data[:,4] = data[:,4]/data[:,2]
+Nunique = np.unique(data[:,2])
 plt.figure()
 for i in range(0,len(Nunique)):
-    loc = np.where(data[:,1]==Nunique[i])[0]
-    plt.scatter(data[loc,0]*data[loc,1],1/data[loc,3]/2,label = fr"$N={Nunique[i]}$")
+    loc = np.where(data[:,2]==Nunique[i])[0]
+    plt.scatter(data[loc,0]*data[loc,2],1/data[loc,4]/2,label = fr"$N={Nunique[i]}$")
     
-    
+np.savetxt('CL_dataset.dat',data) 
 rpa = np.loadtxt('../RPA/RPA_Sinv.dat').transpose()
 plt.plot(rpa[:,0],rpa[:,1])
 plt.legend()
+plt.xlabel(r'$\chi N$')
+plt.ylabel(r'$cNS^{-1}(q^*)$')
+plt.savefig('/home/tquah/Figures/Demo.pdf', dpi = 300)
