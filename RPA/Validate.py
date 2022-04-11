@@ -61,6 +61,8 @@ plt.plot(chilist,1/Speak/2,'--k')
 plt.xlim(0,12)
 plt.ylim(0,12)
 Nlist =[10,20,50,100,200,500,1000]
+Nlist =[30,50,100,200]
+
 # plt.close('all')
 
 plt.figure()

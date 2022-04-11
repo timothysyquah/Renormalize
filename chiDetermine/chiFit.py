@@ -25,25 +25,28 @@ def Pade_Approximation(x,a,b,c,d):
 Nbarfiles = glob.glob('ROL*')
 
 Renorm = dict()
-CL_data = np.loadtxt('CL_dataset.dat')
+CL_data = np.loadtxt('../PeakExtraction/CL_dataset_large.dat')
 
 for i in range(0,len(Nbarfiles)):
 
     N = float(ExtractNumber(Nbarfiles[i])[0])
+    if N not in CL_data[:,2]:
+        continue
+    
+    
     Renorm[i] = np.loadtxt(Nbarfiles[i]).transpose()
 
-    if N<1000:
-        continue
     temp=np.loadtxt(Nbarfiles[i]).transpose()
     tempfunc = interp1d(temp[:,1],temp[:,0])
-    
+    plt.figure()
+    plt.plot(temp[:,0],temp[:,1])
     row = np.where(CL_data[:,2]==N)[0]
     
-    Stemp = CL_data[row,2]/CL_data[row,4]/2
+    Stemp = np.square(CL_data[row,2])/np.sqrt(CL_data[row,2])/CL_data[row,4]/2
     chi_e = tempfunc(Stemp)
     
     plt.figure(figsize = (6,6))
-    plt.title('$N=1000$')
+    # plt.title('$N=1000$')
     plt.plot(CL_data[row,0],chi_e/CL_data[row,2],'ok',label ='Smeared')
     plt.plot(CL_data[row,1],chi_e/CL_data[row,2],'^g',label = 'Unsmeared-FM')
     plt.ylabel('$\chi_e N$')    
@@ -53,7 +56,7 @@ for i in range(0,len(Nbarfiles)):
     param2,pcov2 = curve_fit(Pade_Approximation,CL_data[row,2],chi_e/CL_data[row,2])
     plt.plot(xdata,Pade_Approximation(xdata,param1[0],param1[1],param1[2],param1[3]),label='Pade-Fit')
     plt.legend()
-    plt.savefig('/home/tquah/Figures/N1000Fit.pdf', dpi = 300)
+    # plt.savefig('/home/tquah/Figures/N1000Fit.pdf', dpi = 300)
     
 plt.figure(figsize = (6,6))
 

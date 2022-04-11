@@ -25,8 +25,8 @@ def Prune(Dlist,Desired_Depth):
     return returndire
 
 #general path 
-Path = '/media/tquah/TIMMY/Projects/CL_CG/FORCEMATCH-Smeared_Compressible-Unsmeared-Compressible'
-
+#Path = '/media/tquah/TIMMY/Projects/CL_CG/FORCEMATCH-Smeared_Compressible-Unsmeared-Compressible'
+Path = "/media/tquah/TIMMY/Projects/PodProjects/Projects/CG/CG"
 #change directory
 os.chdir(Path)
 
