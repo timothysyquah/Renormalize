@@ -63,4 +63,5 @@ def inverse_SK_diblock_ROL(f,N,chi,Nbar):
     pc2 = b*np.power((chi*N),c)/den
     pc3 = d
     
+    
     return 1/np.sqrt(Nbar)*(pc1+pc2+pc3)

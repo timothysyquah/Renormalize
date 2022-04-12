@@ -10,7 +10,6 @@ Created on Wed Mar 23 11:07:40 2022
 import numpy as np
 import glob
 import os
-import json
 import pickle
 import re
 #Function to get all directories

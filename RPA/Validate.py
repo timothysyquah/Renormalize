@@ -19,7 +19,7 @@ data_sort = np.argsort(data[:,0])
 
 plt.plot(data[data_sort,0],data[data_sort,1],'ok',label = 'Morse-Qin-2011')
 
-
+C = 1.0
 N = 10
 b = 1
 x = np.linspace(0,4,1000)
@@ -41,7 +41,7 @@ x = np.linspace(0.1,4,1000)
 
 minx = np.min(x)
 maxx = np.max(x)
-chilist = np.linspace(0,10.5,1000)
+chilist = np.linspace(0,16,1000)
 plt.figure()
 Speaklist = []
 for i in range(len(chilist)):
@@ -61,28 +61,33 @@ plt.plot(chilist,1/Speak/2,'--k')
 plt.xlim(0,12)
 plt.ylim(0,12)
 Nlist =[10,20,50,100,200,500,1000]
-Nlist =[30,50,100,200]
+Nlist =[16,32,64,100,128,256]
 
 # plt.close('all')
 
 plt.figure()
 
 for k in range(0,len(Nlist)):
-    Nbar = (0.1*np.sqrt(Nlist[k]))**2*6**3
+    Nbar = (C*np.sqrt(Nlist[k]))**2*6**3
 
     # plt.figure()
     Speaklist = []
     Speak_ROL_list = []
     for i in range(len(chilist)):
-        chi = chilist[i]/N
-        isk = inverse_Sk_diblock(x*x*N/6,N,chi) # units are in Rg
-        qRg= x*np.sqrt(N/6)
-        sk = 1/isk/N
-        cs = CubicSpline(qRg, sk)
-        loc = cs.derivative().roots()[-1]
-        Speaklist.append(cs(loc))
-        extra = inverse_SK_diblock_ROL(0.5,N,chi,Nbar)
-        Speak_ROL_list.append(np.array([chilist[i]*N,extra,1/cs(loc)]))
+        if chilist[i]>10.495:
+            extra = inverse_SK_diblock_ROL(0.5,N,chi,Nbar)
+            Speak_ROL_list.append(np.array([chilist[i]*N,extra,1/cs(loc)]))
+
+        else:
+            chi = chilist[i]/N
+            isk = inverse_Sk_diblock(x*x*N/6,N,chi) # units are in Rg
+            qRg= x*np.sqrt(N/6)
+            sk = 1/isk/N
+            cs = CubicSpline(qRg, sk)
+            loc = cs.derivative().roots()[-1]
+            Speaklist.append(cs(loc))
+            extra = inverse_SK_diblock_ROL(0.5,N,chi,Nbar)
+            Speak_ROL_list.append(np.array([chilist[i]*N,extra,1/cs(loc)]))
         # plt.plot(x,cs(x))
         # plt.plot(loc,cs(loc),'ok')
     Speak = np.vstack(Speaklist).reshape((len(Speaklist)))
@@ -112,7 +117,7 @@ for k in range(0,len(Nlist)):
         dataset = np.vstack((np.array(chilist),1/Speak/2))
         np.savetxt(f'RPA_Sinv.dat',dataset)
     dataset = np.vstack((np.array(chilist[:-1]),Sinv_Rnorm/2))
-    np.savetxt(f'ROL_Sinv_N_{Nlist[k]}_Nbar_{Nbar}.dat',dataset)
+    np.savetxt(f'ROL_Sinv_N_{Nlist[k]}_Nbar_{Nbar:0.1f}.dat',dataset)
 plt.xlabel('$\chi_e N$')
 plt.ylabel('$cN S^{-1}(q^* R_g)/2$')
 plt.savefig('/home/tquah/Figures/ROL_RPA_Peak_chieN.pdf',dpi = 300)
