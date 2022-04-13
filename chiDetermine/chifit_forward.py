@@ -105,6 +105,9 @@ c = 1.0 # need to supply this
     
 #     Newlist.append(np.array([uniqueN[i]*np.ones(len(finloc)),chib[finloc],Sinv2[finloc]]))
 # CleanData = np.hstack(Newlist).transpose()
+
+#####To do reapply mask to Sbounds need to remove the outof boundarystuff
+
 saveparam = []
 for i in range(0,len(uniqueN)):
     if (f,c,uniqueN[i]) not in header:
