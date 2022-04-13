@@ -37,9 +37,7 @@ class CL_Dataset():
         _chie = Pade_Approximation(self._chib,_x[0],_x[1],_x[2])
         _chieN = _chie*self._N
         _chic, _scalc,loc = self._dict[(self._f,self._c,self._N)].Evaluate_Chie(_chieN)
-        print(self._Sinv2[loc])
-        print(np.abs(_scalc-self._Sinv2[loc]) )
-        return np.abs(_scalc-self._Sinv2[loc]) 
+        return np.square(_scalc-self._Sinv2[loc])
     
     
     
@@ -70,7 +68,7 @@ for i in range(len(header)):
 # Ok First need to write in the CL dataset
 
 CL_Data = np.loadtxt("../PeakExtraction/CL_dataset_large.dat")
-Ncutoff = 100
+Ncutoff = 1
 loc = np.where(CL_Data[:,2]>Ncutoff)[0]
 CL_Data_Safe = CL_Data[loc,:]
 uniqueN = np.unique(CL_Data_Safe[:,2])
@@ -79,43 +77,43 @@ c = 1.0 # need to supply this
 
 # need to remove anydata we cannot probe using emperical ROL
 
-# Newlist = []
-# for i in range(0,len(uniqueN)):
-#     if (f,c,uniqueN[i]) not in header:
-#         print(f"Missing f={f} c={c} N={uniqueN[i]}")
-#         continue
-#     loc = header.index((f,c,uniqueN[i]))
-#     chiBounds, Sbounds = ROL_Interp[header[loc]].MinMax()
+Newlist = []
+for i in range(0,len(uniqueN)):
+    if (f,c,uniqueN[i]) not in header:
+        print(f"Missing f={f} c={c} N={uniqueN[i]}")
+        continue
+    loc = header.index((f,c,uniqueN[i]))
+    chiBounds, Sbounds = ROL_Interp[header[loc]].MinMax()
     
-#     #remove anydata using mask
+    #remove anydata using mask
     
-#     loc_cl = np.where(CL_Data_Safe[:,2]==uniqueN[i])[0]
-#     chib = CL_Data_Safe[loc_cl,0]
-#     S = CL_Data_Safe[loc_cl,4]
-#     Sinv2 = uniqueN[i]/S/2
+    loc_cl = np.where(CL_Data_Safe[:,2]==uniqueN[i])[0]
+    chib = CL_Data_Safe[loc_cl,0]
+    S = CL_Data_Safe[loc_cl,4]
+    Sinv2 = uniqueN[i]/S/2
     
-#     #apply masks
+    #apply masks
     
-#     m1 = np.ma.masked_where(chib>=chiBounds[0],chib).mask # not sure if chib mask makes sense need to test
-#     m2 = np.ma.masked_where(chib<=chiBounds[1],chib).mask
-#     m3 = np.ma.masked_where(Sinv2>=Sbounds[0],Sinv2).mask
-#     m4 = np.ma.masked_where(Sinv2<=Sbounds[1],Sinv2).mask
-#     m = m1*m2*m3*m4
-#     finloc = np.where(m==True)[0]
+    # m1 = np.ma.masked_where(chib>=chiBounds[0],chib).mask # not sure if chib mask makes sense need to test
+    # m2 = np.ma.masked_where(chib<=chiBounds[1],chib).mask
+    m3 = np.ma.masked_where(Sinv2>=Sbounds[0],Sinv2).mask
+    m4 = np.ma.masked_where(Sinv2<=Sbounds[1],Sinv2).mask
+    m =m3*m4
+    finloc = np.where(m==True)[0]
     
-#     Newlist.append(np.array([uniqueN[i]*np.ones(len(finloc)),chib[finloc],Sinv2[finloc]]))
-# CleanData = np.hstack(Newlist).transpose()
+    Newlist.append(np.array([uniqueN[i]*np.ones(len(finloc)),chib[finloc],Sinv2[finloc]]))
+CleanData = np.hstack(Newlist).transpose()
 saveparam = []
 for i in range(0,len(uniqueN)):
     if (f,c,uniqueN[i]) not in header:
         print(f"Missing f={f} c={c} N={uniqueN[i]}")
         continue
     loc = header.index((f,c,uniqueN[i]))
-    # loc_cl = np.where(CleanData[:,0]==uniqueN[i])[0]
-    loc_cl = np.where(CL_Data_Safe[:,2]==uniqueN[i])[0]
+    loc_cl = np.where(CleanData[:,0]==uniqueN[i])[0]
+    # loc_cl = np.where(CL_Data_Safe[:,2]==uniqueN[i])[0]
     # Sinv2 = uniqueN[i]/S/2
        
-    fitinit = CL_Dataset(CL_Data_Safe[loc_cl,0],uniqueN[i]/CL_Data_Safe[loc_cl,4]/2,uniqueN[i],ROL_Interp,f,c)
+    fitinit = CL_Dataset(CleanData[loc_cl,1],uniqueN[i]/CleanData[loc_cl,2]/2,uniqueN[i],ROL_Interp,f,c)
     param = least_squares(fitinit.CostFunction,x0 = np.ones(3)*0.5,xtol = 1e-12,ftol = 1e-12)
     print(param)
     saveparam.append(param.x)

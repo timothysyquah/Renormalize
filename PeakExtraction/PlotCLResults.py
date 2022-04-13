@@ -48,7 +48,7 @@ for i in range(0,len(uniquen)):
 
 #plot structure factor by N
 
-file = open("dataC1_a1.pkl",'rb')
+file = open("dataC1_zeta10.pkl",'rb')
 dictionary = pickle.load(file)
 header = list(dictionary)
 nlist = extract_numberlist(header, 0)
@@ -70,8 +70,10 @@ for i in range(0,len(uniquen)):
         kcutoff = np.where(SKAA[:,0]<2.0)[0]
 
         x = SKAA[kcutoff,0]*np.sqrt(uniquen[i])
-        S = SKAA[:,1]+SKAB[:,1]-2*SKAB[:,1]
-        plt.plot(x,S[kcutoff]/uniquen[i],label = f'$\chi N ={chi * uniquen[i]}$')
+        S = SKAA[:,1]+SKBB[:,1]-2*SKAB[:,1]
+        plt.plot(x,S[kcutoff]/uniquen[i]/4,label = f'$\chi N ={chi * uniquen[i]}$')
+        plt.plot(x,SKAA[kcutoff,1]/uniquen[i],label = f'$\chi N ={chi * uniquen[i]}$')
+
     plt.legend()
     plt.xlabel('$k R_g$')
     plt.ylabel("$S(k)/cN$")
