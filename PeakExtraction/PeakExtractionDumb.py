@@ -42,7 +42,7 @@ def fdist(x,a,b,c,d):
 #change directory
 cutoff = 1
 Working_Directory = os.getcwd()
-file = open("dataC1.pkl",'rb')
+file = open("dataC1_zeta10.pkl",'rb')
 
 dictionary = pickle.load(file)
 header = list(dictionary)
@@ -54,6 +54,11 @@ for i in range(0,len(header),1):
     N = dictionary[header[i]]['N']
     chi_a = dictionary[header[i]]['Chi']
     if chi_a*N < 2.0:
+        continue
+    
+    if N==256:
+        continue
+    if N==100:
         continue
     S = (dictionary[header[i]]['SKAA'][:,1]+ dictionary[header[i]]['SKBB'][:,1]-2* dictionary[header[i]]['SKAB'][:,1])
     x = dictionary[header[i]]['SKAA'][:,0]*np.sqrt(N)

@@ -80,12 +80,9 @@ for i in range(0,len(Nbarfiles)):
     ax1.plot(chi_e,Stemp,'ok')
     ax2.scatter(chib[loca]/N,chi_e/N,label = f'N = {N}')
     
-    param,pcov = curve_fit(Pade_Approximation,chib[loca]/N,chi_e/N)
-    ax1.plot(Pade_Approximation(chib[loca]/N,param[0],param[1],param[2])*N,Stemp,'^b')
+    # param,pcov = curve_fit(Pade_Approximation,chib[loca]/N,chi_e/N)
+    # ax1.plot(Pade_Approximation(chib[loca]/N,param[0],param[1],param[2])*N,Stemp,'^b')
     chimatchlist.append(np.vstack((chib[loca],chi_e,Stemp,N*np.ones(len(chi_e)))).transpose())
-    print(N)    
-    print(param)
-    
 ax1.legend()
 ax2.legend()
 
@@ -93,12 +90,11 @@ ax2.legend()
 chimatch = np.vstack(chimatchlist)
 param,pcov = curve_fit(Pade_Approximation,chimatch[:,0]/chimatch[:,3],chimatch[:,1]/chimatch[:,3])
 
-ax1.plot(Pade_Approximation(chimatch[:,0]/chimatch[:,3],param[0],param[1],param[2])*N,chimatch[:,2],'sr')
+ax1.plot(Pade_Approximation(chimatch[:,0]/chimatch[:,3],param[0],param[1],param[2])*chimatch[:,3],chimatch[:,2],'sr')
 
 
 x = np.linspace(0,0.8,100)
 ax2.plot(x,Pade_Approximation(x,param[0],param[1],param[2]),'--k')
-
     # ax2.scatter(fmchib[loca],chi_e)
 
     # plt.figure(figsize = (6,6))
