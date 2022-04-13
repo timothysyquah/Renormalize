@@ -41,7 +41,7 @@ x = np.linspace(0.1,4,1000)
 
 minx = np.min(x)
 maxx = np.max(x)
-chilist = np.linspace(0,16,1000)
+chilist = np.linspace(0,10.,1000)
 plt.figure()
 Speaklist = []
 for i in range(len(chilist)):

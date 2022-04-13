@@ -5,6 +5,8 @@ Created on Mon Apr 11 15:38:49 2022
 
 @author: tquah
 """
+import sys
+sys.path.append(../)
 import glob
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit,leastsq
@@ -51,38 +53,36 @@ def S_ROL(N,chie):
             return 0, Status
 
 
-class ROL_Object():
-    def __init__(self,chie,Sinv):
-        self.chie = chie
-        self.Sinv = Sinv
-    def 
 
 
-#build manually 
+    
 
-# First load in the entire datasets
-Renorm = dict()
-CL_data = np.loadtxt('../PeakExtraction/CL_dataset_large.dat')
-#deal with Nbar stuff-maybe generate exact data for each point we "need"
-ROL_txt = 'ROL*dat'
 
-Nunique = np.unique(CL_data[:,2])
-def Create_ROL_Dictionary(ROL_txt,Nlist):
-    D = dict()
-    for i in range(len(Nlist)):
-        D[f]
-        Nbarfiles = glob.glob(ROL_txt)
-        Nbarlist = extract_numberlist(Nbarfiles,0)
-        loc = np.where(Nbarlist==Nlist[i])[0]
-        if len(loc)!=1:
-            print('Too Many Nbar or too Few...skipping')
-        else:
-            RenormData = np.loadtxt(Nbarfiles[loc[0]])
-            interp = interp1d(RenormData[:,0], RenormData[:,1])
-            minvalue = np.min(RenormData[:,0])
-            maxvalue = np.max(RenormData[:,0])
-            D['f'] 
-            D['min']
-            D['max']
+# #build manually 
+
+# # First load in the entire datasets
+# Renorm = dict()
+# CL_data = np.loadtxt('../PeakExtraction/CL_dataset_large.dat')
+# #deal with Nbar stuff-maybe generate exact data for each point we "need"
+# ROL_txt = 'ROL*dat'
+
+# Nunique = np.unique(CL_data[:,2])
+# def Create_ROL_Dictionary(ROL_txt,Nlist):
+#     D = dict()
+#     for i in range(len(Nlist)):
+#         D[f]
+#         Nbarfiles = glob.glob(ROL_txt)
+#         Nbarlist = extract_numberlist(Nbarfiles,0)
+#         loc = np.where(Nbarlist==Nlist[i])[0]
+#         if len(loc)!=1:
+#             print('Too Many Nbar or too Few...skipping')
+#         else:
+#             RenormData = np.loadtxt(Nbarfiles[loc[0]])
+#             interp = interp1d(RenormData[:,0], RenormData[:,1])
+#             minvalue = np.min(RenormData[:,0])
+#             maxvalue = np.max(RenormData[:,0])
+#             D['f'] 
+#             D['min']
+#             D['max']
 
     

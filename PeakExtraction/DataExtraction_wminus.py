@@ -26,7 +26,7 @@ def Prune(Dlist,Desired_Depth):
 WDIR = os.getcwd()
 #general path 
 #Path = '/media/tquah/TIMMY/Projects/CL_CG/FORCEMATCH-Smeared_Compressible-Unsmeared-Compressible'
-Path = "/media/tquah/TIMMY/Projects/PodProjects/Projects/CG/C_ref_1.0"
+Path = "/media/tquah/TIMMY/Projects/PodProjects/Projects/CG/C_ref_1.0_zeta_10.0"
 #change directory
 os.chdir(Path)
 
@@ -101,7 +101,7 @@ for i in range(0,len(Directories)):
         os.chdir(Working_Directory)
      
 
-f = open(f'{WDIR}/dataC1.pkl',"wb")
+f = open(f'{WDIR}/dataC1_zeta10.pkl',"wb")
 pickle.dump(Data_Dictionary,f)
 f.close()
     
